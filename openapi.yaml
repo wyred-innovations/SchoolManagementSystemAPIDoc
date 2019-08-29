@@ -3,7 +3,7 @@ servers:
   - description: SwaggerHub API Auto Mocking
     url: 'https://virtserver.swaggerhub.com/wyred-innovations/SchoolManagementSystem/1.0.0'
   - description: School Management System API
-    url: 'https://wyredinnovations.com/SchoolManagement/api/'
+    url: 'http://172.21.116.145/api/'
 info:
   description: This is an API for School Management System
   version: 1.0.0
@@ -16,6 +16,18 @@ tags:
   - name: developers
     description: Operations available to regular developers
 paths:
+  /users:
+    get:
+      summary: list registered users
+      operationId: users
+      description: List registered users
+      responses:
+        '201':
+          description: item created
+        '400':
+          description: 'invalid input, object invalid'
+        '409':
+          description: an existing item already exists
   /register:
     post:
       tags:
