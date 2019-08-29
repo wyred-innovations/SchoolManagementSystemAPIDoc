@@ -1,0 +1,240 @@
+openapi: 3.0.0
+servers:
+  - description: SwaggerHub API Auto Mocking
+    url: 'https://virtserver.swaggerhub.com/wyred-innovations/SchoolManagementSystem/1.0.0'
+  - description: School Management System API
+    url: 'https://wyredinnovations.com/SchoolManagement/api/'
+info:
+  description: This is an API for School Management System
+  version: 1.0.0
+  title: School Management System API
+  contact:
+    email: wyred.innovations@gmail.com
+tags:
+  - name: admins
+    description: Secured Admin-only calls
+  - name: developers
+    description: Operations available to regular developers
+paths:
+  /register:
+    post:
+      tags:
+        - admins
+      summary: register account
+      operationId: register
+      description: Adds account to the system
+      parameters:
+        - in: query
+          name: first_name
+          description: User first name
+          required: true
+          schema:
+            type: string
+            format: varchar
+            minimum: 3
+            maximum: 20
+        - in: query
+          name: middle_initial
+          description: User middle initial
+          required: false
+          schema:
+            type: string
+            format: varchar
+            maximum: 1
+        - in: query
+          name: last_name
+          description: User last name
+          required: true
+          schema:
+            type: string
+            format: varchar
+            minimum: 3
+            maximum: 20
+        - in: query
+          name: gender
+          description: User gender
+          required: false
+          schema:
+            type: string
+            format: varchar
+            enum:
+              - male
+              - female
+        - in: query
+          name: username
+          description: Username
+          required: true
+          schema:
+            type: string
+            format: varchar
+            minimum: 3
+            maximum: 20
+        - in: query
+          name: password
+          description: User passphrase
+          required: true
+          schema:
+            type: string
+            format: varchar
+            minimum: 3
+            maximum: 20
+      responses:
+        '201':
+          description: item created
+        '400':
+          description: 'invalid input, object invalid'
+        '409':
+          description: an existing item already exists
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserAccessToken'
+        description: Access token retrieved from registration / login
+  /login:
+    post:
+      summary: authenticate user credential
+      operationId: login
+      description: Authenticate user credential by returning access token
+      parameters:
+        - in: query
+          name: username
+          description: Username
+          required: true
+          schema:
+            type: string
+            format: varchar
+        - in: query
+          name: password
+          description: Passphrase
+          required: true
+          schema:
+            type: string
+            format: varchar
+      responses:
+        '200':
+          description: Authenticated
+        '400':
+          description: invalid input
+        '401':
+          description: Unauthorized
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserAccessToken'
+        description: Access token retrieved from registration / login
+  /logout:
+    post:
+      summary: revoked access token
+      operationId: logout
+      description: Revoke user access token
+      responses:
+        '200':
+          description: Revoked
+        '401':
+          description: Access revoked
+components:
+  schemas:
+    Account:
+      type: object
+      required:
+        - id
+        - username
+        - password
+        - person_id
+        - email
+        - created_at
+        - updated_at
+      properties:
+        id:
+          type: integer
+          format: int64
+          example: 1
+        username:
+          type: string
+          format: string
+          example: admin
+        password:
+          type: string
+          format: string
+          example: $3mweMErowmmOMQWelxKqMQWOEmksx31249AMSDor4912m
+        person_id:
+          $ref: '#/components/schemas/Person'
+    Person:
+      type: object
+      required:
+        - id
+        - first_name
+        - middle_initial
+        - last_name
+        - gender
+      properties:
+        id:
+          type: integer
+          format: integer
+          example: 1
+        first_name:
+          type: string
+          format: string
+          example: Admin
+        middle_initial:
+          type: string
+          format: char
+          example: M
+        last_name:
+          type: string
+          format: string
+          example: Poule
+        gender:
+          type: string
+          format: enum
+          enum:
+            - male
+            - female
+    UserAccessToken:
+      type: object
+      required:
+        - token
+        - name
+      properties:
+        token:
+          type: string
+          format: hash
+          example: 7ad0e1efedaee62e6d1d96b45bd2e7d1fa4e786722ed3528b1a2baadd8e97d6d78122698a2315ca2
+    InventoryItem:
+      type: object
+      required:
+        - id
+        - name
+        - manufacturer
+        - releaseDate
+      properties:
+        id:
+          type: string
+          format: uuid
+          example: d290f1ee-6c54-4b01-90e6-d701748f0851
+        name:
+          type: string
+          example: Widget Adapter
+        releaseDate:
+          type: string
+          format: date-time
+          example: '2016-08-29T09:12:33.001Z'
+        manufacturer:
+          $ref: '#/components/schemas/Manufacturer'
+    Manufacturer:
+      required:
+        - name
+      properties:
+        name:
+          type: string
+          example: ACME Corporation
+        homePage:
+          type: string
+          format: url
+          example: 'https://www.acme-corp.com'
+        phone:
+          type: string
+          example: 408-867-5309
+      type: object
